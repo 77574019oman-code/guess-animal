@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "خمّن الحيوان من كلمة واحدة",
+  "short_name": "خمّن الحيوان",
+  "description": "لعبة جماعية: خمّن الحيوان من تلميحات بكلمة واحدة، والمنظّم يتحكم بالتلميحات والنقاط.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E8F3EF",
+  "theme_color": "#E8F3EF",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

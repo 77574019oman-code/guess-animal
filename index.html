@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>خمّن الحيوان من كلمة واحدة</title>
+<meta name="theme-color" content="#E8F3EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E2830" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="خمّن الحيوان">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Readex+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E8F3EF;
+    --surface: #FFFFFF;
+    --ink: #12303A;
+    --muted: #58737B;
+    --line: #C5DAD3;
+    --accent: #FFC83D;
+    --accent-ink: #3A2B00;
+    --coral: #F26A55;
+    --coral-ink: #FFFFFF;
+    --leaf: #1F8A5E;
+    --leaf-ink: #FFFFFF;
+    --wrong: #C93C3C;
+    --shadow: rgba(18, 48, 58, .12);
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E2830; --surface: #163842; --ink: #EAF5F1; --muted: #9BB8B0; --line: #2B525C;
+      --leaf: #47C48D; --leaf-ink: #06281A; --coral: #FF7C69; --coral-ink: #3A0C05;
+      --wrong: #FF8A8A; --shadow: rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E2830; --surface: #163842; --ink: #EAF5F1; --muted: #9BB8B0; --line: #2B525C;
+    --leaf: #47C48D; --leaf-ink: #06281A; --coral: #FF7C69; --coral-ink: #3A0C05;
+    --wrong: #FF8A8A; --shadow: rgba(0, 0, 0, .35);
+  }
+
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Readex Pro", "Segoe UI", Tahoma, "Noto Naskh Arabic", system-ui, sans-serif;
+    font-size: 16px; line-height: 1.7; -webkit-text-size-adjust: 100%;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .app { max-width: 600px; margin: 0 auto; padding: 18px 16px 40px; }
+
+  .brand { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .brand h1 { font-family: "Lalezar", "Readex Pro", system-ui, sans-serif; font-weight: 400; font-size: 32px; line-height: 1.2; margin: 0; }
+  .theme-btn { border: 2px solid var(--line); background: var(--surface); width: 42px; height: 42px; border-radius: 50%; font-size: 18px; }
+
+  .panel { background: var(--surface); border: 2px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 16px; box-shadow: 0 6px 0 var(--shadow); }
+  .panel h2 { font-family: "Lalezar", "Readex Pro", sans-serif; font-weight: 400; font-size: 24px; margin: 0 0 4px; line-height: 1.3; }
+  .sub { color: var(--muted); margin: 0 0 14px; font-size: 15px; }
+
+  .player-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .text-input { flex: 1; min-width: 0; border: 2px solid var(--line); background: var(--bg); border-radius: 14px; padding: 11px 14px; font-size: 17px; }
+  .text-input:focus { border-color: var(--leaf); outline: none; }
+  .icon-btn { width: 48px; border: 2px solid var(--line); background: var(--bg); border-radius: 14px; font-size: 18px; color: var(--muted); }
+  .link-btn { background: none; border: 0; color: var(--leaf); font-weight: 600; padding: 6px 2px; font-size: 15px; }
+
+  .btn {
+    display: block; width: 100%; border: 0; border-radius: 16px; padding: 13px 18px;
+    font-family: "Lalezar", "Readex Pro", sans-serif; font-size: 22px; line-height: 1.3;
+    background: var(--coral); color: var(--coral-ink); box-shadow: 0 5px 0 rgba(0,0,0,.18);
+    transition: transform .08s, box-shadow .08s;
+  }
+  .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
+  .btn.leaf { background: var(--leaf); color: var(--leaf-ink); }
+  .btn.sun { background: var(--accent); color: var(--accent-ink); }
+  .btn.ghost { background: var(--surface); color: var(--ink); border: 2px solid var(--line); box-shadow: none; font-size: 18px; margin-top: 10px; }
+  .btn.inline { display: inline-block; width: auto; padding: 9px 20px; font-size: 19px; }
+  .btn + .btn { margin-top: 10px; }
+  .error { color: var(--wrong); font-weight: 600; margin: 10px 0 0; min-height: 1.5em; }
+
+  /* لوحة النقاط */
+  .scores { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; margin-bottom: 8px; }
+  .chip { flex: 0 0 auto; border: 2px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 14px; font-size: 15px; white-space: nowrap; }
+  .chip b { font-weight: 600; margin-inline-start: 8px; background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 0 9px; }
+  .chip.win { border-color: var(--leaf); box-shadow: 0 0 0 2px var(--leaf) inset; }
+
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .topline span { color: var(--muted); font-size: 14px; }
+
+  /* اختيار الحيوان */
+  .cats { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 10px; }
+  .cats button { flex: 0 0 auto; border: 2px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 14px; font-size: 14px; }
+  .cats button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; margin-top: 12px; }
+  .animal-btn { border: 2px solid var(--line); background: var(--bg); border-radius: 16px; padding: 8px 4px 6px; text-align: center; font-size: 14px; line-height: 1.4; }
+  .animal-btn .em { display: block; font-size: 36px; line-height: 1.2; }
+  .animal-btn.used { opacity: .45; }
+  .animal-btn:active { border-color: var(--leaf); }
+  .empty-msg { color: var(--muted); text-align: center; padding: 18px 0; grid-column: 1 / -1; }
+  .custom-row { display: flex; gap: 8px; margin-top: 12px; }
+  .custom-row .btn { white-space: nowrap; }
+
+  /* الجولة */
+  .pic { text-align: center; font-size: 120px; line-height: 1.15; padding-top: 4px; animation: pop .4s cubic-bezier(.3,1.6,.5,1); }
+  .pic.hidden { font-size: 70px; color: var(--muted); }
+  .pic small { display: block; font-size: 15px; font-family: "Readex Pro", sans-serif; }
+  .pic-name { font-family: "Lalezar", "Readex Pro", sans-serif; text-align: center; font-size: 38px; line-height: 1.3; margin: 0; }
+  .pic-tools { display: flex; justify-content: center; margin-top: 6px; }
+
+  .hints { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 8px 0 4px; min-height: 52px; align-items: center; }
+  .tile { font-family: "Lalezar", "Readex Pro", sans-serif; font-size: 30px; line-height: 1.3; padding: 6px 22px; border-radius: 16px; background: var(--coral); color: var(--coral-ink); box-shadow: 0 4px 0 rgba(0,0,0,.18); }
+  .tile:nth-child(2n) { background: var(--leaf); color: var(--leaf-ink); transform: rotate(1.5deg); }
+  .tile:nth-child(2n+1) { transform: rotate(-1.5deg); }
+  .tile:nth-child(3n) { background: var(--accent); color: var(--accent-ink); }
+  .tile.fresh { animation: pop .35s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { opacity: 1; } }
+  .none-yet { color: var(--muted); text-align: center; font-size: 15px; }
+
+  .field-label { font-weight: 600; margin: 14px 0 8px; display: block; }
+  .sug { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sug button { border: 2px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 16px; font-size: 16px; }
+  .sug button:disabled { opacity: .35; text-decoration: line-through; }
+  .add-row { display: flex; gap: 8px; margin-top: 10px; }
+  .add-row .btn { white-space: nowrap; }
+
+  .award { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+  .award .btn { font-size: 19px; padding: 10px 8px; margin: 0; }
+
+  .reveal-msg { text-align: center; margin: 6px 0 12px; font-size: 18px; }
+  .reveal-msg strong { color: var(--leaf); }
+
+  /* النتيجة النهائية */
+  .rank { list-style: none; padding: 0; margin: 12px 0 18px; display: grid; gap: 8px; }
+  .rank li { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: var(--bg); border: 2px solid var(--line); font-size: 18px; }
+  .rank li.win { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 22%, var(--bg)); font-weight: 600; }
+  .rank .pts { font-family: "Lalezar", "Readex Pro", sans-serif; font-size: 24px; }
+  .trophy { font-size: 72px; text-align: center; line-height: 1.2; }
+
+  details.rules summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+  details.rules ol { padding-inline-start: 22px; margin: 10px 0; }
+  details.rules li { margin-bottom: 6px; }
+
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <h1>خَمّن الحيوان 🐾</h1>
+    <button class="theme-btn" id="themeBtn" aria-label="تبديل الوضع الليلي">🌓</button>
+  </div>
+  <main id="screen"></main>
+</div>
+
+<script>
+(function () {
+  /* ---------- بيانات الحيوانات: [الاسم، الصورة، الصنف، [تلميحات مقترحة]] ---------- */
+  var CATS = [
+    ['all', 'الكل'], ['wild', 'برية'], ['sea', 'بحرية'], ['bird', 'طيور'], ['pet', 'أليفة ومزرعة'], ['bug', 'حشرات وزواحف']
+  ];
+  var RAW = [
+    // برية
+    ['الأسد', '🦁', 'wild', ['مفترس', 'لبدة', 'ملك', 'زئير']],
+    ['النمر', '🐅', 'wild', ['مخطط', 'غابة', 'مفترس', 'آسيوي']],
+    ['الفهد', '🐆', 'wild', ['بقع', 'سريع', 'مفترس', 'سافانا']],
+    ['الذئب', '🐺', 'wild', ['عواء', 'قطيع', 'مفترس', 'ليل']],
+    ['الثعلب', '🦊', 'wild', ['ماكر', 'أحمر', 'ذيل', 'دجاج']],
+    ['الدب', '🐻', 'wild', ['ضخم', 'عسل', 'سبات', 'مخالب']],
+    ['الباندا', '🐼', 'wild', ['صيني', 'خيزران', 'أبيض', 'أسود']],
+    ['الفيل', '🐘', 'wild', ['ضخم', 'خرطوم', 'عاج', 'ذاكرة']],
+    ['الزرافة', '🦒', 'wild', ['طويلة', 'عنق', 'بقع', 'أوراق']],
+    ['الحمار الوحشي', '🦓', 'wild', ['مخطط', 'أفريقي', 'أبيض', 'أسود']],
+    ['وحيد القرن', '🦏', 'wild', ['قرن', 'ضخم', 'سميك', 'أفريقي']],
+    ['فرس النهر', '🦛', 'wild', ['ماء', 'ضخم', 'فم', 'أفريقي']],
+    ['الغوريلا', '🦍', 'wild', ['ضخمة', 'قوية', 'غابة', 'صدر']],
+    ['إنسان الغاب', '🦧', 'wild', ['شعر', 'أحمر', 'أشجار', 'ذكي']],
+    ['القرد', '🐒', 'wild', ['موز', 'تسلق', 'ذكي', 'أشجار']],
+    ['الكنغر', '🦘', 'wild', ['أسترالي', 'قفز', 'جراب', 'ملاكمة']],
+    ['الكوالا', '🐨', 'wild', ['أوكالبتوس', 'نوم', 'جراب', 'لطيف']],
+    ['الكسلان', '🦥', 'wild', ['بطيء', 'معلق', 'استوائي', 'نوم']],
+    ['الغزال', '🦌', 'wild', ['رشيق', 'قرون', 'سريع', 'خجول']],
+    ['الراكون', '🦝', 'wild', ['قناع', 'ليلي', 'أمريكي', 'يغسل']],
+    ['الظربان', '🦨', 'wild', ['رائحة', 'ليلي', 'أبيض', 'أسود']],
+    ['الغرير', '🦡', 'wild', ['جحر', 'ليلي', 'مخطط', 'عنيد']],
+    ['القندس', '🦫', 'wild', ['سد', 'أسنان', 'ماء', 'خشب']],
+    ['القضاعة', '🦦', 'wild', ['نهر', 'لعوب', 'سباحة', 'فراء']],
+    ['القنفذ', '🦔', 'wild', ['أشواك', 'ليلي', 'كرة', 'صغير']],
+    ['السنجاب', '🐿️', 'wild', ['جوز', 'شجرة', 'ذيل', 'يخزّن']],
+    ['الخفاش', '🦇', 'wild', ['ليل', 'كهف', 'صدى', 'مقلوب']],
+    ['البيسون', '🦬', 'wild', ['أمريكي', 'ضخم', 'قطيع', 'سهول']],
+    ['الجمل', '🐪', 'wild', ['صحراء', 'سنام', 'صبور', 'قافلة']],
+    ['الماموث', '🦣', 'wild', ['منقرض', 'عاج', 'فراء', 'جليد']],
+    ['اللاما', '🦙', 'wild', ['جبال', 'صوف', 'بصق', 'أنديز']],
+    ['الخنزير البري', '🐗', 'wild', ['أنياب', 'غابة', 'قوي', 'بري']],
+    // بحرية
+    ['الدلفين', '🐬', 'sea', ['ذكي', 'قفز', 'صافرة', 'ثديي']],
+    ['الحوت', '🐋', 'sea', ['ضخم', 'محيط', 'ينفث', 'أزرق']],
+    ['القرش', '🦈', 'sea', ['زعنفة', 'أسنان', 'مفترس', 'دم']],
+    ['الأخطبوط', '🐙', 'sea', ['ثمانية', 'حبر', 'أذرع', 'ذكي']],
+    ['الحبار', '🦑', 'sea', ['حبر', 'أذرع', 'عميق', 'بحر']],
+    ['الجمبري', '🦐', 'sea', ['صغير', 'قشور', 'وردي', 'مأكول']],
+    ['الكركند', '🦞', 'sea', ['مخالب', 'أحمر', 'قشرة', 'فاخر']],
+    ['السلطعون', '🦀', 'sea', ['جانبي', 'مخالب', 'شاطئ', 'قشرة']],
+    ['السمكة المنتفخة', '🐡', 'sea', ['منتفخة', 'شوك', 'دفاع', 'سامة']],
+    ['السمكة', '🐟', 'sea', ['ماء', 'زعانف', 'خياشيم', 'صنارة']],
+    ['السمكة الملونة', '🐠', 'sea', ['ملونة', 'حوض', 'استوائية', 'مرجان']],
+    ['الفقمة', '🦭', 'sea', ['زعانف', 'شوارب', 'قطبية', 'كرة']],
+    // طيور
+    ['النسر', '🦅', 'bird', ['جارح', 'قمم', 'بصر', 'حاد']],
+    ['البومة', '🦉', 'bird', ['ليل', 'حكمة', 'عيون', 'رأس']],
+    ['الببغاء', '🦜', 'bird', ['تقليد', 'ملون', 'ريش', 'قفص']],
+    ['الطاووس', '🦚', 'bird', ['ذيل', 'ألوان', 'ريش', 'فخور']],
+    ['البجعة', '🦢', 'bird', ['أبيض', 'بحيرة', 'رقبة', 'أنيقة']],
+    ['الفلامنغو', '🦩', 'bird', ['وردي', 'ساق', 'واقف', 'بحيرة']],
+    ['البطريق', '🐧', 'bird', ['جليد', 'سباحة', 'أنيق', 'قطبي']],
+    ['البطة', '🦆', 'bird', ['بحيرة', 'ماء', 'سباحة', 'قاق']],
+    ['الدجاجة', '🐔', 'bird', ['بيض', 'مزرعة', 'صوص', 'قفص']],
+    ['الديك', '🐓', 'bird', ['صياح', 'فجر', 'عرف', 'مزرعة']],
+    ['الديك الرومي', '🦃', 'bird', ['الشكر', 'سمين', 'أمريكي', 'عيد']],
+    ['العصفور', '🐦', 'bird', ['صغير', 'تغريد', 'عش', 'جناح']],
+    ['الكتكوت', '🐤', 'bird', ['صغير', 'أصفر', 'بيضة', 'زقزقة']],
+    ['الحمامة', '🕊️', 'bird', ['سلام', 'بيضاء', 'زاجل', 'غصن']],
+    // أليفة ومزرعة
+    ['الكلب', '🐕', 'pet', ['وفي', 'نباح', 'حراسة', 'عظم']],
+    ['القطة', '🐈', 'pet', ['مواء', 'شوارب', 'سمك', 'خدش']],
+    ['الأرنب', '🐇', 'pet', ['أذنان', 'جزر', 'قفز', 'سريع']],
+    ['الحصان', '🐎', 'pet', ['صهيل', 'فروسية', 'حدوة', 'ركوب']],
+    ['البقرة', '🐄', 'pet', ['حليب', 'مزرعة', 'خوار', 'عشب']],
+    ['الثور', '🐂', 'pet', ['قرون', 'هائج', 'قوي', 'مصارعة']],
+    ['الخروف', '🐑', 'pet', ['صوف', 'ثغاء', 'عيد', 'قطيع']],
+    ['الماعز', '🐐', 'pet', ['لحية', 'جبال', 'قرون', 'حليب']],
+    ['الخنزير', '🐖', 'pet', ['وحل', 'مزرعة', 'وردي', 'ذيل']],
+    ['الجاموس', '🐃', 'pet', ['ماء', 'قرون', 'أسود', 'حرارة']],
+    ['الهامستر', '🐹', 'pet', ['صغير', 'دولاب', 'خدود', 'قفص']],
+    ['الفأر', '🐁', 'pet', ['جبن', 'صغير', 'قط', 'ذيل']],
+    // حشرات وزواحف
+    ['النحلة', '🐝', 'bug', ['عسل', 'لسعة', 'خلية', 'طنين']],
+    ['الفراشة', '🦋', 'bug', ['ألوان', 'جناح', 'شرنقة', 'رحيق']],
+    ['النملة', '🐜', 'bug', ['مستعمرة', 'صغيرة', 'عمل', 'حمل']],
+    ['الدعسوقة', '🐞', 'bug', ['حمراء', 'نقاط', 'حظ', 'صغيرة']],
+    ['العنكبوت', '🕷️', 'bug', ['خيوط', 'ثمانية', 'شبكة', 'خوف']],
+    ['العقرب', '🦂', 'bug', ['سم', 'ذيل', 'صحراء', 'لدغة']],
+    ['البعوضة', '🦟', 'bug', ['طنين', 'لسعة', 'دم', 'ليل']],
+    ['الحلزون', '🐌', 'bug', ['بطيء', 'صدفة', 'رطوبة', 'لزج']],
+    ['اليرقة', '🐛', 'bug', ['زحف', 'تتحول', 'ورق', 'خضراء']],
+    ['صرصور الليل', '🦗', 'bug', ['صوت', 'ليل', 'قفز', 'عشب']],
+    ['السلحفاة', '🐢', 'bug', ['بطيئة', 'درع', 'معمرة', 'زاحفة']],
+    ['الثعبان', '🐍', 'bug', ['زاحف', 'سم', 'فحيح', 'يزحف']],
+    ['الحرباء', '🦎', 'bug', ['تتلون', 'لسان', 'تتخفى', 'عينان']],
+    ['التمساح', '🐊', 'bug', ['نهر', 'أسنان', 'دموع', 'زاحف']],
+    ['الضفدع', '🐸', 'bug', ['نقيق', 'قفز', 'بركة', 'أخضر']],
+    ['الديناصور', '🦖', 'bug', ['منقرض', 'ضخم', 'مفترس', 'أحفوري']]
+  ];
+  var ANIMALS = RAW.map(function (r) { return { n: r[0], e: r[1], c: r[2], h: r[3] }; });
+  var MAX_PLAYERS = 12;
+  var STORE = 'guessAnimalV2';
+
+  /* ---------- أدوات ---------- */
+  var AR_DIGITS = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  function ar(n) { return String(n).replace(/\d/g, function (d) { return AR_DIGITS[d]; }); }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function norm(s) {
+    s = String(s || '').trim().toLowerCase();
+    s = s.replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+    s = s.replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي');
+    return s.replace(/(^|\s)ال/g, '$1');
+  }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify({ players: S.players, scores: S.scores, used: S.used })); } catch (e) {}
+  }
+  function load() {
+    try {
+      var d = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (d && d.players && d.players.length && d.scores && d.scores.length === d.players.length) return d;
+    } catch (e) {}
+    return null;
+  }
+  function clearSaved() { try { localStorage.removeItem(STORE); } catch (e) {} }
+
+  /* ---------- الحالة ---------- */
+  var S = {
+    screen: 'setup',
+    names: ['', ''],
+    players: [], scores: [], used: [],
+    cat: 'all', q: '',
+    cur: null, shown: [], phase: 'live', winner: -1, hide: false,
+    setupError: ''
+  };
+  var screen = document.getElementById('screen');
+
+  document.getElementById('themeBtn').addEventListener('click', function () {
+    var root = document.documentElement;
+    var cur = root.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', dark ? 'light' : 'dark');
+  });
+
+  function scoreHTML() {
+    var top = Math.max.apply(null, S.scores);
+    return '<div class="scores" aria-label="النقاط">' + S.players.map(function (p, i) {
+      return '<span class="chip' + (S.phase === 'done' && i === S.winner ? ' win' : '') + '">' + esc(p) + '<b>' + ar(S.scores[i]) + '</b></span>';
+    }).join('') + '</div>';
+  }
+
+  /* ---------- 1) الإعداد ---------- */
+  function saveNames() {
+    var inputs = screen.querySelectorAll('.name-input');
+    if (inputs.length) S.names = Array.prototype.map.call(inputs, function (i) { return i.value; });
+  }
+  function renderSetup() {
+    S.screen = 'setup';
+    var saved = load();
+    var rows = S.names.map(function (n, i) {
+      return '<div class="player-row">' +
+        '<input class="text-input name-input" maxlength="14" placeholder="اللاعب ' + ar(i + 1) + '" value="' + esc(n) + '" aria-label="اسم اللاعب ' + ar(i + 1) + '">' +
+        (S.names.length > 1 ? '<button class="icon-btn" data-remove="' + i + '" aria-label="حذف اللاعب">✕</button>' : '') +
+        '</div>';
+    }).join('');
+
+    screen.innerHTML =
+      (saved ? '<section class="panel"><h2>لعبة محفوظة</h2><p class="sub">' + saved.players.map(esc).join('، ') + '</p>' +
+        '<button class="btn leaf" id="resume">تابع اللعبة</button></section>' : '') +
+      '<section class="panel">' +
+        '<h2>سجّل اللاعبين</h2>' +
+        '<p class="sub">اكتب اسم كل لاعب. أنت المنظّم: تختار الحيوان وتعطي التلميحات، ثم تضغط «صح» على اسم من يخمّن أولًا.</p>' +
+        rows +
+        (S.names.length < MAX_PLAYERS ? '<button class="link-btn" id="addPlayer">+ إضافة لاعب</button>' : '') +
+        '<p class="error" id="setupError">' + esc(S.setupError) + '</p>' +
+        '<button class="btn" id="startBtn">ابدأ اللعبة</button>' +
+      '</section>' +
+      '<section class="panel"><details class="rules"><summary>طريقة اللعب</summary><ol>' +
+        '<li>اختر حيوانًا واحدًا لكل اللاعبين. صورته تظهر لك أنت فقط، فأخفها إذا كانت الشاشة أمامهم.</li>' +
+        '<li>أعطِ التلميح الأول: كلمة واحدة. اختر من الاقتراحات أو اكتب تلميحك.</li>' +
+        '<li>إذا ما عرف أحد، أعطِ التلميح الثاني ثم الثالث، بدون تغيير الحيوان.</li>' +
+        '<li>أول من يجاوب صح، اضغط اسمه لتُسجَّل له نقطة.</li>' +
+        '<li>في النهاية يفوز صاحب أكبر عدد من النقاط.</li>' +
+      '</ol></details></section>';
+
+    screen.querySelectorAll('[data-remove]').forEach(function (b) {
+      b.addEventListener('click', function () { saveNames(); S.names.splice(+b.getAttribute('data-remove'), 1); renderSetup(); });
+    });
+    var add = document.getElementById('addPlayer');
+    if (add) add.addEventListener('click', function () {
+      saveNames(); S.names.push(''); renderSetup();
+      var ins = screen.querySelectorAll('.name-input'); ins[ins.length - 1].focus();
+    });
+    document.getElementById('startBtn').addEventListener('click', startGame);
+    var res = document.getElementById('resume');
+    if (res) res.addEventListener('click', function () {
+      S.players = saved.players; S.scores = saved.scores; S.used = saved.used || [];
+      renderPick();
+    });
+  }
+
+  function startGame() {
+    saveNames();
+    var names = S.names.map(function (n, i) { return n.trim() || ('اللاعب ' + ar(i + 1)); });
+    var seen = {};
+    for (var i = 0; i < names.length; i++) {
+      if (seen[names[i]]) {
+        S.setupError = 'الاسم «' + names[i] + '» مكرر. اختر اسمًا مختلفًا لكل لاعب.';
+        renderSetup(); return;
+      }
+      seen[names[i]] = true;
+    }
+    S.setupError = '';
+    S.players = names;
+    S.scores = names.map(function () { return 0; });
+    S.used = [];
+    save();
+    renderPick();
+  }
+
+  /* ---------- 2) اختيار الحيوان ---------- */
+  function filtered() {
+    var q = norm(S.q);
+    return ANIMALS.filter(function (a) {
+      return (S.cat === 'all' || a.c === S.cat) && (!q || norm(a.n).indexOf(q) !== -1);
+    });
+  }
+  function gridHTML() {
+    var list = filtered();
+    if (!list.length) return '<p class="empty-msg">ما لقيت حيوانًا بهذا الاسم. تقدر تضيفه من الأسفل.</p>';
+    return list.map(function (a) {
+      var u = S.used.indexOf(a.n) !== -1;
+      return '<button class="animal-btn' + (u ? ' used' : '') + '" data-animal="' + esc(a.n) + '"><span class="em">' + a.e + '</span>' + esc(a.n) + (u ? ' ✓' : '') + '</button>';
+    }).join('');
+  }
+  function bindGrid() {
+    screen.querySelectorAll('[data-animal]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var name = b.getAttribute('data-animal');
+        startRound(ANIMALS.filter(function (a) { return a.n === name; })[0]);
+      });
+    });
+  }
+  function renderPick() {
+    S.screen = 'pick'; S.cur = null; S.shown = []; S.phase = 'live'; S.winner = -1;
+    var cats = CATS.map(function (c) {
+      return '<button data-cat="' + c[0] + '" aria-pressed="' + (S.cat === c[0]) + '">' + c[1] + '</button>';
+    }).join('');
+    screen.innerHTML =
+      scoreHTML() +
+      '<section class="panel">' +
+        '<div class="topline"><h2>اختر الحيوان</h2><span>' + ar(ANIMALS.length) + ' حيوانًا</span></div>' +
+        '<p class="sub">اختر حيوانًا واحدًا لكل اللاعبين. أبعد الشاشة عنهم وقت الاختيار.</p>' +
+        '<button class="btn sun" id="randomBtn">🎲 حيوان عشوائي</button>' +
+        '<div class="cats" style="margin-top:12px">' + cats + '</div>' +
+        '<input class="text-input" id="search" style="width:100%" placeholder="ابحث باسم الحيوان" aria-label="بحث" value="' + esc(S.q) + '">' +
+        '<div class="grid" id="grid">' + gridHTML() + '</div>' +
+        '<div class="custom-row"><input class="text-input" id="customName" maxlength="24" placeholder="حيوان من عندك" aria-label="اسم حيوان من عندك"><button class="btn leaf inline" id="customBtn">ابدأ به</button></div>' +
+      '</section>' +
+      '<button class="btn ghost" id="endBtn">إنهاء اللعبة وعرض الفائز</button>';
+
+    bindGrid();
+    document.getElementById('search').addEventListener('input', function (e) {
+      S.q = e.target.value;
+      document.getElementById('grid').innerHTML = gridHTML();
+      bindGrid();
+    });
+    screen.querySelectorAll('[data-cat]').forEach(function (b) {
+      b.addEventListener('click', function () { S.cat = b.getAttribute('data-cat'); renderPick(); });
+    });
+    document.getElementById('randomBtn').addEventListener('click', function () {
+      var pool = filtered().filter(function (a) { return S.used.indexOf(a.n) === -1; });
+      if (!pool.length) pool = filtered();
+      if (pool.length) startRound(pick(pool));
+    });
+    function customStart() {
+      var v = document.getElementById('customName').value.trim();
+      if (!v) { document.getElementById('customName').focus(); return; }
+      startRound({ n: v, e: '🐾', c: 'custom', h: [] });
+    }
+    document.getElementById('customBtn').addEventListener('click', customStart);
+    document.getElementById('customName').addEventListener('keydown', function (e) { if (e.key === 'Enter') customStart(); });
+    document.getElementById('endBtn').addEventListener('click', renderFinal);
+  }
+
+  /* ---------- 3) الجولة ---------- */
+  function startRound(animal) {
+    S.cur = animal; S.shown = []; S.phase = 'live'; S.winner = -1;
+    renderRound(false);
+  }
+  function renderRound(fresh) {
+    S.screen = 'round';
+    var a = S.cur, live = S.phase === 'live';
+    var showPic = S.phase === 'done' || !S.hide;
+
+    var pic = showPic
+      ? '<div class="pic">' + a.e + '</div><p class="pic-name">' + esc(a.n) + '</p>'
+      : '<div class="pic hidden">🙈<small>الصورة والاسم مخفيان</small></div>';
+    var tools = live
+      ? '<div class="pic-tools"><button class="link-btn" id="eyeBtn">' + (S.hide ? '👁️ إظهار الصورة' : '🙈 إخفاء الصورة') + '</button></div>'
+      : '';
+
+    var tiles = S.shown.length
+      ? S.shown.map(function (h, i) {
+          return '<span class="tile' + (fresh && i === S.shown.length - 1 ? ' fresh' : '') + '">' + esc(h.t) + '</span>';
+        }).join('')
+      : '<span class="none-yet">ما أعطيت أي تلميح بعد.</span>';
+
+    var hintsPanel = '';
+    if (live) {
+      var sugs = a.h.map(function (h, i) {
+        var used = S.shown.some(function (s) { return s.i === i; });
+        return '<button data-sug="' + i + '"' + (used ? ' disabled' : '') + '>' + esc(h) + '</button>';
+      }).join('');
+      hintsPanel =
+        (a.h.length ? '<span class="field-label">اختر التلميح التالي</span><div class="sug">' + sugs + '</div>' : '') +
+        '<span class="field-label">أو اكتب تلميحك (كلمة واحدة)</span>' +
+        '<div class="add-row"><input class="text-input" id="customHint" maxlength="20" placeholder="تلميحك" aria-label="تلميح من عندك"><button class="btn leaf inline" id="addHint">أضف</button></div>' +
+        (S.shown.length ? '<button class="link-btn" id="undoHint">حذف آخر تلميح</button>' : '');
+    }
+
+    var action;
+    if (live) {
+      action =
+        '<section class="panel"><h2>من عرف الحيوان؟</h2><p class="sub">اضغط اسم أول من جاوب صح.</p>' +
+        '<div class="award">' + S.players.map(function (p, i) {
+          return '<button class="btn leaf" data-award="' + i + '">✓ ' + esc(p) + '</button>';
+        }).join('') + '</div>' +
+        '<button class="btn ghost" id="nobody">ما عرفه أحد</button></section>';
+    } else {
+      var msg = S.winner >= 0
+        ? '<p class="reveal-msg"><strong>' + esc(S.players[S.winner]) + '</strong> جاوب صح وحصل على نقطة 🎉</p>'
+        : '<p class="reveal-msg">ما عرفه أحد هذه المرة. بدون نقاط.</p>';
+      action =
+        '<section class="panel">' + msg +
+        '<button class="btn" id="nextAnimal">حيوان جديد</button>' +
+        '<button class="btn ghost" id="undoAward">تراجع وأكمل التلميحات</button></section>';
+    }
+
+    screen.innerHTML =
+      scoreHTML() +
+      '<section class="panel">' + pic + tools +
+        '<div class="hints" aria-live="polite">' + tiles + '</div>' + hintsPanel +
+      '</section>' + action;
+
+    var eye = document.getElementById('eyeBtn');
+    if (eye) eye.addEventListener('click', function () { S.hide = !S.hide; renderRound(false); });
+
+    screen.querySelectorAll('[data-sug]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = +b.getAttribute('data-sug');
+        S.shown.push({ t: a.h[i], i: i });
+        renderRound(true);
+      });
+    });
+    function addCustom() {
+      var inp = document.getElementById('customHint');
+      var v = inp.value.trim();
+      if (!v) { inp.focus(); return; }
+      S.shown.push({ t: v, i: -1 });
+      renderRound(true);
+      var again = document.getElementById('customHint'); if (again) again.focus();
+    }
+    var addBtn = document.getElementById('addHint');
+    if (addBtn) {
+      addBtn.addEventListener('click', addCustom);
+      document.getElementById('customHint').addEventListener('keydown', function (e) { if (e.key === 'Enter') addCustom(); });
+    }
+    var undoH = document.getElementById('undoHint');
+    if (undoH) undoH.addEventListener('click', function () { S.shown.pop(); renderRound(false); });
+
+    screen.querySelectorAll('[data-award]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var p = +b.getAttribute('data-award');
+        S.scores[p]++; S.winner = p; S.phase = 'done';
+        S.used.push(a.n); save();
+        renderRound(false);
+      });
+    });
+    var nob = document.getElementById('nobody');
+    if (nob) nob.addEventListener('click', function () {
+      S.winner = -1; S.phase = 'done'; S.used.push(a.n); save(); renderRound(false);
+    });
+    var nxt = document.getElementById('nextAnimal');
+    if (nxt) nxt.addEventListener('click', function () { renderPick(); });
+    var und = document.getElementById('undoAward');
+    if (und) und.addEventListener('click', function () {
+      if (S.winner >= 0) S.scores[S.winner]--;
+      S.used.pop(); S.winner = -1; S.phase = 'live'; save();
+      renderRound(false);
+    });
+  }
+
+  /* ---------- 4) النتيجة النهائية ---------- */
+  function renderFinal() {
+    S.screen = 'final';
+    var list = S.players.map(function (p, i) { return { name: p, pts: S.scores[i] }; })
+      .sort(function (a, b) { return b.pts - a.pts; });
+    var top = list[0].pts;
+    var winners = list.filter(function (x) { return x.pts === top; });
+    var title, sub;
+    if (top === 0) { title = 'ما أحد سجّل نقطة'; sub = 'جولة جديدة وتلميحات أسهل؟'; }
+    else if (winners.length > 1) { title = 'تعادل!'; sub = winners.map(function (w) { return esc(w.name); }).join(' و') + ' بنفس النقاط.'; }
+    else { title = 'الفائز: ' + esc(winners[0].name); sub = 'جمع ' + ar(top) + ' نقطة.'; }
+
+    var rows = list.map(function (x, i) {
+      var win = top > 0 && x.pts === top;
+      return '<li class="' + (win ? 'win' : '') + '"><span>' + (win ? '🏆 ' : ar(i + 1) + '. ') + esc(x.name) + '</span><span class="pts">' + ar(x.pts) + '</span></li>';
+    }).join('');
+
+    screen.innerHTML =
+      '<section class="panel">' +
+        '<div class="trophy">' + (top === 0 ? '🐾' : '🏆') + '</div>' +
+        '<h2 style="text-align:center">' + title + '</h2>' +
+        '<p class="sub" style="text-align:center">' + sub + '</p>' +
+        '<ul class="rank">' + rows + '</ul>' +
+        '<button class="btn leaf" id="back">رجوع لإكمال اللعبة</button>' +
+        '<button class="btn" id="again">لعبة جديدة بنفس اللاعبين</button>' +
+        '<button class="btn ghost" id="newPlayers">لاعبون جدد</button>' +
+      '</section>';
+    document.getElementById('back').addEventListener('click', renderPick);
+    document.getElementById('again').addEventListener('click', function () {
+      S.scores = S.players.map(function () { return 0; }); S.used = []; save(); renderPick();
+    });
+    document.getElementById('newPlayers').addEventListener('click', function () {
+      clearSaved(); S.names = ['', '']; renderSetup();
+    });
+  }
+
+  renderSetup();
+})();
+</script>
+<script>
+  // تسجيل عامل الخدمة ليعمل التطبيق بدون إنترنت (يحتاج https أو localhost)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('service-worker.js').catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>
